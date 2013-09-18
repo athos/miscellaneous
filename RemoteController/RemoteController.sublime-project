@@ -1,0 +1,43 @@
+{
+	"build_systems":
+	[
+		{
+			"cmd":
+			[
+				"build.bat"
+			],
+			"name": "Build",
+			"variants":
+			[
+				{
+					"cmd":
+					[
+						"clean.bat"
+					],
+					"name": "Clean"
+				}
+			],
+			"working_dir": "X:/",
+			"path": "X:/bin;X:/script;C:/Program Files/Java/jdk1.7.0_25/bin",
+			"encoding": "Shift_JIS"
+		}
+	],
+	"folders":
+	[
+		{
+			"file_exclude_patterns":
+			[
+				"*.sublime-project",
+				"*.sublime-workspace",
+				"*.class",
+				"*~"
+			],
+			"path": "/X"
+		}
+	],
+	"settings":
+	{
+		"tab_size": 4,
+		"translate_tabs_to_spaces": true
+	}
+}

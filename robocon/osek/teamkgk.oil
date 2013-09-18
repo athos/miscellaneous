@@ -1,0 +1,248 @@
+/* nxtway_gs.oil */
+
+#include "./implementation.oil"
+
+CPU ATMEL_AT91SAM7S256
+{
+    OS LEJOS_OSEK
+    {
+        STATUS = EXTENDED;
+        STARTUPHOOK = FALSE;
+        SHUTDOWNHOOK = FALSE;
+        PRETASKHOOK = FALSE;
+        POSTTASKHOOK = FALSE;
+        USEGETSERVICEID = FALSE;
+        USEPARAMETERACCESS = FALSE;
+        USERESSCHEDULER = FALSE;
+    };
+    
+    
+    /* Definition of application mode */
+    APPMODE appmode1{};
+    
+    
+    /*-------【優先度(1 << 10)】-------*/
+    /* Task_Main            : Pri = 10 */
+    /* Task_2ms             : Pri =  9 */
+    /* Task_4ms             : Pri =  8 */
+    /* Task_8ms             : Pri =  7 */
+    /* Task_16ms            : Pri =  6 */
+    /* Task_20ms            : Pri =  5 */
+    /* Task_100ms           : Pri =  4 */
+    /* Task_500ms           : Pri =  3 */
+    /*---------------------------------*/
+    
+    /*------------*/
+    /* Mainタスク */
+    /*------------*/
+    TASK Task_Main
+    {
+        AUTOSTART = TRUE
+        {
+            APPMODE = appmode1;
+        };
+        PRIORITY = 10;
+        ACTIVATION = 1;
+        SCHEDULE = NON;
+        STACKSIZE = 512;
+    };
+    
+    /*---------------*/
+    /* 2ms周期タスク */
+    /*---------------*/
+    TASK Task_2ms
+    {
+        AUTOSTART = FALSE;
+        PRIORITY = 9;
+        ACTIVATION = 1;
+        SCHEDULE = FULL;
+        STACKSIZE = 512;  /* bytes */
+    };
+    ALARM Alarm_task_2ms
+    {
+        COUNTER = SysTimerCnt;
+        ACTION = ACTIVATETASK
+        {
+            TASK = Task_2ms;
+        };
+        AUTOSTART = TRUE
+        {
+            APPMODE = appmode1;
+            ALARMTIME = 1;
+            CYCLETIME = 2;  /* 2ms周期 */
+        };
+    };
+    
+    
+    /*---------------*/
+    /* 4ms周期タスク */
+    /*---------------*/
+    TASK Task_4ms
+    {
+        AUTOSTART = FALSE;
+        PRIORITY = 8;
+        ACTIVATION = 1;
+        SCHEDULE = FULL;
+        STACKSIZE = 512;  /* bytes */
+    };
+    ALARM Alarm_task_4ms
+    {
+        COUNTER = SysTimerCnt;
+        ACTION = ACTIVATETASK
+        {
+            TASK = Task_4ms;
+        };
+        AUTOSTART = TRUE
+        {
+            APPMODE = appmode1;
+            ALARMTIME = 1;
+            CYCLETIME = 4;  /* 4ms周期 */
+        };
+    };
+    
+    
+    /*---------------*/
+    /* 8ms周期タスク */
+    /*---------------*/
+    TASK Task_8ms
+    {
+        AUTOSTART = FALSE;
+        PRIORITY = 7;
+        ACTIVATION = 1;
+        SCHEDULE = FULL;
+        STACKSIZE = 512;  /* bytes */
+    };
+    ALARM Alarm_task_8ms
+    {
+        COUNTER = SysTimerCnt;
+        ACTION = ACTIVATETASK
+        {
+            TASK = Task_8ms;
+        };
+        AUTOSTART = TRUE
+        {
+            APPMODE = appmode1;
+            ALARMTIME = 1;
+            CYCLETIME = 8;  /* 8ms周期 */
+        };
+    };
+    
+    
+    /*---------------*/
+    /* 16ms周期タスク */
+    /*---------------*/
+    TASK Task_16ms
+    {
+        AUTOSTART = FALSE;
+        PRIORITY = 6;
+        ACTIVATION = 1;
+        SCHEDULE = FULL;
+        STACKSIZE = 512;  /* bytes */
+    };
+    ALARM Alarm_task_16ms
+    {
+        COUNTER = SysTimerCnt;
+        ACTION = ACTIVATETASK
+        {
+            TASK = Task_16ms;
+        };
+        AUTOSTART = TRUE
+        {
+            APPMODE = appmode1;
+            ALARMTIME = 1;
+            CYCLETIME = 16;  /* 16ms周期 */
+        };
+    };
+    
+    
+    /*---------------*/
+    /* 20ms周期タスク */
+    /*---------------*/
+    TASK Task_20ms
+    {
+        AUTOSTART = FALSE;
+        PRIORITY = 5;
+        ACTIVATION = 1;
+        SCHEDULE = FULL;
+        STACKSIZE = 512;  /* bytes */
+    };
+    ALARM Alarm_task_20ms
+    {
+        COUNTER = SysTimerCnt;
+        ACTION = ACTIVATETASK
+        {
+            TASK = Task_20ms;
+        };
+        AUTOSTART = TRUE
+        {
+            APPMODE = appmode1;
+            ALARMTIME = 1;
+            CYCLETIME = 20;  /* 20ms周期 */
+        };
+    };
+    
+    
+    /*-----------------*/
+    /* 100ms周期タスク */
+    /*-----------------*/
+    TASK Task_100ms
+    {
+        AUTOSTART = FALSE;
+        PRIORITY = 4;
+        ACTIVATION = 1;
+        SCHEDULE = FULL;
+        STACKSIZE = 512;  /* bytes */
+    };
+    ALARM Alarm_task_100ms
+    {
+        COUNTER = SysTimerCnt;
+        ACTION = ACTIVATETASK
+        {
+            TASK = Task_100ms;
+        };
+        AUTOSTART = TRUE
+        {
+            APPMODE = appmode1;
+            ALARMTIME = 1;
+            CYCLETIME = 100;  /* 100ms周期 */
+        };
+    };
+    
+    
+    /*-----------------*/
+    /* 500ms周期タスク */
+    /*-----------------*/
+    TASK Task_500ms
+    {
+        AUTOSTART = FALSE;
+        PRIORITY = 3;
+        ACTIVATION = 1;
+        SCHEDULE = FULL;
+        STACKSIZE = 512;  /* bytes */
+    };
+    ALARM Alarm_task_500ms
+    {
+        COUNTER = SysTimerCnt;
+        ACTION = ACTIVATETASK
+        {
+            TASK = Task_500ms;
+        };
+        AUTOSTART = TRUE
+        {
+            APPMODE = appmode1;
+            ALARMTIME = 1;
+            CYCLETIME = 500;  /* 500ms周期 */
+        };
+    };
+    
+    
+    /*-----------------------------------------------*/
+    /* Definition of OSEK Alarm counter: SysTimerCnt */
+    /*-----------------------------------------------*/
+    COUNTER SysTimerCnt
+    {
+        MINCYCLE = 1;
+        MAXALLOWEDVALUE = 10000;
+        TICKSPERBASE = 1;
+    };
+};
