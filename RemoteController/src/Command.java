@@ -2,6 +2,7 @@ import java.nio.ByteBuffer;
 
 public class Command {
     private int id;
+    private int portId;
     private int commandType;
     private int parameter;
     private Condition condition;
@@ -10,7 +11,8 @@ public class Command {
     
     private Command() {}
     
-    public Command(int commandType, int parameter, Condition condition) {
+    public Command(int portId, int commandType, int parameter, Condition condition) {
+        this.portId = portId;
         this.commandType = commandType;
         this.parameter = parameter;
         this.condition = condition;
@@ -20,6 +22,10 @@ public class Command {
 
     public int getId() {
         return id;
+    }
+
+    public int getPortId() {
+        return portId;
     }
 
     public boolean equals(Object o) {
@@ -69,7 +75,8 @@ public class Command {
     }
     
     public static void main(String[] args) {
-        Command com = new Command(100,
+        Command com = new Command(1,
+                                  100,
                                   200,
                                   new Condition(0,
                                                 new Condition(3, 300),

@@ -25,11 +25,11 @@ public class RemoteController {
                     break;
                 }
 
-                List<Scenario.Node> nodes = scenario.getNext(commandId);
-                for (Scenario.Node node : nodes) {
+                List<Command> commands = scenario.getNextCommands(commandId);
+                for (Command command : commands) {
                     System.out.println("sending command");
-                    node.cmd.print();
-                    manager.send(node);
+                    command.print();
+                    manager.send(command);
                 }
             } catch (InterruptedException e) {
                 System.out.println("interrupted");
@@ -54,7 +54,8 @@ public class RemoteController {
         PortManager manager = new PortManager(maxPorts, appName, timeout, baudrate);
         manager.addPort(1, new CommunicationPort("COM18"));
         //manager.addPort(2, new CommunicationPort("COM17"));
-        Scenario scenario = ScenarioFactory.makeScenario();
+        ScenarioFactory factory = ScenarioFactory.getDefault();
+        Scenario scenario = factory.makeScenario();
         
         try {
             RemoteController controller = new RemoteController(manager, scenario);
@@ -65,7 +66,7 @@ public class RemoteController {
             System.out.flush();
             System.in.read();
 
-            manager.send(scenario.getFirstNode());
+            manager.send(scenario.getFirstCommand());
 
             System.out.println("after sending command");
 

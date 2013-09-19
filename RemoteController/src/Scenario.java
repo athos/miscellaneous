@@ -3,33 +3,24 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
-abstract public class Scenario {
-    public static class Node {
-        List<Node> nextNodes;
-        List<Node> prevNodes;
-        Command cmd;
-        int portId;
-        boolean done = false;
+public class Scenario {
+    public class Node {
+        private List<Node> nextNodes;
+        private List<Node> prevNodes;
+        private Command cmd;
+        private boolean done = false;
 
-        static Map<Integer, Node> map = new HashMap<Integer, Node>();
-
-        Node(Command cmd, int portId, Node... nodes) {
+        private Node(Command cmd) {
             this.cmd = cmd;
-            this.portId = portId;
             nextNodes = new ArrayList<Node>();
             prevNodes = new ArrayList<Node>();
-            map.put(cmd.getId(), this);
-            for (Node prev : nodes) {
-                prevNodes.add(prev);
-                prev.nextNodes.add(this);
-            }
         }
 
-        static Node findByCommandId(int commandId) {
-            return map.get(commandId);
+        public Command getCommand() {
+            return cmd;
         }
 
-        boolean isReadyToStart() {
+        private boolean isReadyToStart() {
             for (Node prev : prevNodes) {
                 if (!prev.done) {
                     return false;
@@ -39,30 +30,67 @@ abstract public class Scenario {
         }
     }
 
-    protected Node start, end;
+    private Map<Integer, Node> map;
+    private Node start, end;
 
-    abstract public void make();
+    public Scenario() {
+        start = null;
+        end = null;
+        map = new HashMap<Integer, Node>();
+    }
 
-    public Node getFirstNode() {
-        return start;
+    public void connectNodes(Node parent, Node node) {
+        parent.nextNodes.add(node);
+        node.prevNodes.add(parent);
+        if (parent == end) {
+            end = node;
+        }
+    }
+
+    public Node makeNode(Command cmd, Node... parents) {
+        Node node = new Node(cmd);
+        for (Node parent : parents) {
+            connectNodes(parent, node);
+        }
+        map.put(cmd.getId(), node);
+
+        return node;
+    }
+
+    public void addNode(Node node) {
+        if (start == null) {
+            start = node;
+            end = node;
+        } else {
+            connectNodes(end, node);
+            end = node;
+        }
+    }
+
+    public Command getFirstCommand() {
+        return start.cmd;
     }
 
     public boolean isFinished() {
         return end.done;
     }
-    
+
+    private Node findNodeByCommandId(int commandId) {
+        return map.get(commandId);
+    }
+
     public void notifyCommandDone(int commandId) {
-        Node node = Node.findByCommandId(commandId);
+        Node node = findNodeByCommandId(commandId);
         node.done = true;
     }
 
-    public List<Node> getNext(int commandId) {
-        Node node = Node.findByCommandId(commandId);
+    public List<Command> getNextCommands(int commandId) {
+        Node node = findNodeByCommandId(commandId);
 
-        List<Node> ret = new ArrayList<Node>();
+        List<Command> ret = new ArrayList<Command>();
         for (Node next : node.nextNodes) {
             if (next.isReadyToStart()) {
-                ret.add(next);
+                ret.add(next.cmd);
             }
         }
         return ret;

@@ -22,7 +22,7 @@ public class CommandParser {
     public Command parse(String s) {
         String[] parts = s.split(",");
 
-        if (parts.length != 3) {
+        if (parts.length != 4) {
             complain(s);
         }
 
@@ -30,11 +30,12 @@ public class CommandParser {
             parts[i] = parts[i].trim();
         }
 
-        int commandType = Integer.parseInt(parts[0]);
-        int parameter = Integer.parseInt(parts[1]);
-        Condition condition = parseCondition(parts[2]);
+        int portId = Integer.parseInt(parts[0]);
+        int commandType = Integer.parseInt(parts[1]);
+        int parameter = Integer.parseInt(parts[2]);
+        Condition condition = parseCondition(parts[3]);
 
-        Command cmd = new Command(commandType, parameter, condition);
+        Command cmd = new Command(portId, commandType, parameter, condition);
 
         return cmd;
     }
@@ -195,13 +196,13 @@ public class CommandParser {
             CommandParser parser = new CommandParser();
             Command cmd;
 
-            cmd = parser.parse("1, 10, dist >= 30");
+            cmd = parser.parse("1, 1, 10, dist >= 30");
             cmd.print();
 
-            cmd = parser.parse("2, 30, gyro <= 20");
+            cmd = parser.parse("1, 2,30,gyro <= 20");
             cmd.print();
 
-            cmd = parser.parse("3, 40, (dist > 30) && (gyro == 0)");
+            cmd = parser.parse("1, 3, 40, ((dist > 30) && (speed == 0))");
             cmd.print();
         } catch (Exception e) {
             e.printStackTrace();

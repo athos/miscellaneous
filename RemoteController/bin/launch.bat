@@ -1,2 +1,2 @@
-java -cp src;lib\jar\windows\RXTXcomm.jar -Djava.library.path=lib\native\windows RemoteController
+java -cp src;conf;lib\jar\windows\RXTXcomm.jar -Djava.library.path=lib\native\windows RemoteController
 

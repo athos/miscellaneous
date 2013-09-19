@@ -42,9 +42,9 @@ public class PortManager implements ResponseListener {
         }
     }
 
-    public void send(Scenario.Node node) {
-        CommunicationPort port = getPortById(node.portId);
-        port.send(node.cmd);
+    public void send(Command cmd) {
+        CommunicationPort port = getPortById(cmd.getPortId());
+        port.send(cmd);
     }
     
     public void responseReceived(Response res) {
