@@ -35,6 +35,7 @@ TARGET_SOURCES :=          \
 	../src/strategy/dispatch.c         \
 	../src/strategy/soukou_touritsu.c         \
 	../src/control/control.c         \
+	../src/strategy/test_strategy.c
 
 # TOPPERS/ATK(OSEK)ê›íËÉtÉ@ÉCÉã
 TOPPERS_OSEK_OIL_SOURCE := ../osek/teamkgk.oil

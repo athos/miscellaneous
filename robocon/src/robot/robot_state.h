@@ -5,6 +5,7 @@
 typedef struct _ROBOT_STATUS {
 
     unsigned short lightval;       /* 光センサなまし値 */
+    unsigned short lightraw;       /* 光センサ生値 */
     unsigned short gyroval;        /* ジャイロセンサ生値 */
     unsigned short gyro_offset;    /* ジャイロセンサoffset */
 

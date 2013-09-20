@@ -40,13 +40,13 @@ typedef struct _command
 	unsigned char  mode_straight;
 } command;
 
-static u2 u2s_mode1_count;
-static u1 u1s_motor_speed;
+static u2 u2s_mode1_count = 0;
+static u1 u1s_motor_speed = 0;
 static targetComd targetLocal;
-static f4 f4s_last_yp;
+static f4 f4s_last_yp = 0;
 static u1 u1s_2msflipcount;
 static u1 nowCmdNum = 0;
-static u2 u2s_count;
+static u2 u2s_count = 0;
 
 void Run( void );
 s1 tailControl( unsigned char tailAngletarget , unsigned char tailAngle );
@@ -59,22 +59,22 @@ void soukou_tail( targetComd target , motorval *motorvalue );
 #define  BASE_P_DATA         0.3
 #define  BASE_D_DATA         0.12
 
-command command1[] =
+const command command1[] =
 {
-	{ 200 ,   0 , 0  , 95  ,  0.3,  0.12 , 0.35 , 1 },
-	{2700 , -40 , 0  , 95  ,  0.3,  0.12 , 0.35 , 1 }, /* up */
+    { 200 ,   0 , 0  , 98  ,  0.3,  0.12 , 0.35 , 1 },
+    {2700 , -40 , 0  , 98  ,  0.3,  0.12 , 0.35 , 1 }, /* up */
 	{3500 ,  40 , 0  , 105 ,  0.3,  0.12 , 0.35 , 1 }, /* peak */
-	{4200 ,   0 , 0  , 85  ,  0.4,  0.12 , 0.65 , 2 }, /* down */  /* ç‚ìπçÇí·ç∑ëŒçÙ */
+    {4100 ,   0 , 10 , 92  ,  0.4,  0.2  , 0.65 , 2 }, /* down */  /* ç‚ìπçÇí·ç∑ëŒçÙ */
 	{5200 ,   0 , 0  , 95  ,  0.3,  0.12 , 0.35 , 1 }, /* down 2 */
-	{5650 ,   0 , 0  , 95  ,  0.3,  0.12 , 0.35 , 1 }, /* L1 start */ 
-	{7500 ,   0 , 30 , 95  ,  0.45, 0.24 , 0.65 , 2 }, /* L1 end */
-	{9200 ,   0 , 0  , 95  ,  0.3,  0.12 , 0.35 , 1 }, /* L2 start */
-	{11700 ,  0 , 20 , 95  ,  0.55, 0.24,  0.65 , 2 }, /* L2 end */
-	{12200 ,  0 , 0  , 95  ,  0.3,  0.12 , 0.35 , 1 }, /* R1 start */
-	{15900 ,  0 , -25, 95  ,  0.45, 0.16,  0.6  , 2 }, /* R1 end */
-	{17300 ,  0 , 0  , 95  ,  0.3,  0.12,  0.35 , 1 }, /* L3 start */
-	{18800 ,  0 , 30 , 95  ,  0.55, 0.24,  0.7  , 2 }, /* L3 end */
-	{19000 ,  0 , 0  , 95  ,  0.3,  0.12 , 0.35 , 1 } 
+    {5500 ,   0 , 0  , 98  ,  0.3,  0.12 , 0.35 , 1 }, /* L1 start */ 
+    {7500 ,   0 , 30 , 98  ,  0.45, 0.24 , 0.65 , 2 }, /* L1 end */
+    {9200 ,   0 , 0  , 98  ,  0.3,  0.12 , 0.35 , 1 }, /* L2 start */
+    {11700 ,  0 , 30 , 98  ,  0.55, 0.24,  0.65 , 2 }, /* L2 end */
+    {12200 ,  0 , 0  , 98  ,  0.3,  0.12 , 0.35 , 1 }, /* R1 start */
+    {15900 ,  0 , -25, 98  ,  0.45, 0.16,  0.6  , 2 }, /* R1 end */
+    {17300 ,  0 , 0  , 98  ,  0.3,  0.12,  0.35 , 1 }, /* L3 start */
+    {18800 ,  0 , 30 , 98  ,  0.55, 0.24,  0.7  , 2 }, /* L3 end */
+    {19000 ,  0 , 0  , 98  ,  0.3,  0.12 , 0.35 , 1 } 
 };
 
 
@@ -87,6 +87,8 @@ void setBasicStageTargetValue( Command* cmd , ROBOT_STATUS* status )
     {
         nowCmdNum++;
         u2s_count = 0;
+        ecrobot_sound_tone(200, 70, 100);
+
     }
 
     if ( u2s_count < PARA_CHANGE_TIME )
@@ -136,6 +138,8 @@ void setStopTargetValue( Command* cmd , ROBOT_STATUS* status )  /* êKîˆóßÇ¬ÇÃÇ› 
 
     soukou_tail( targetLocal , &motorvalue );
     motorvalue.tailmotor = tailControl( targetLocal.tailangletarget , targetLocal.tailangle );
+    motorvalue.leftmotor = 0;
+    motorvalue.rightmotor = 0;
 }
 
 void
@@ -198,7 +202,7 @@ soukou_tail( targetComd target , motorval *motorvalue )
 
     f4t_turn = f4t_turn * target.corner_data;
 
-    u1t_motor_max = 95;
+    u1t_motor_max = 90;
 
     if ( target.stopTime != 0)
     {

@@ -19,7 +19,7 @@ TASK( Task_2ms )
 TASK( Task_4ms )
 {
 
-    monitor( &(data_log_buffer[0]) );
+  //monitor( &(data_log_buffer[0]) );
 
     TerminateTask();
 }

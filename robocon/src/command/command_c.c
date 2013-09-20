@@ -1,5 +1,3 @@
-#include "./command.h"
-#include "./command_factory.h"
 #include "./command_c.h"
 
 static Condition cond_1 =   /* ベーシック走行終了条件 */
@@ -46,22 +44,24 @@ static Condition cond_4;    /* 難所カーブ終了条件 */
 
 Command cmd_local_buf[] =
 {
-    { 0x01 ,   /* ベーシック走行コマンド */
+    { 0,       /* コマンドID(ダミー) */
+      0x01 ,   /* ベーシック走行コマンド */
       95 ,     /* speed指示 */
       &cond_1
     },
     
-    { 0x02 ,   /* 停止コマンド */
+    { 0,       /* コマンドID(ダミー) */
+      0x02 ,   /* 停止コマンド */
       0x00 ,   /* */
       &cond_2
     },
 
-    { 0x03 ,   /* DUMMY*/
+    { 0,       /* コマンドID(ダミー) */
+      0x03 ,   /* DUMMY*/
       0x00 ,   /* DUMMY*/
       &cond_3
     },
 };
-
 
 void command_init( void )   /* 宣言時初期化できないため、初期化関数を作成した */
 {

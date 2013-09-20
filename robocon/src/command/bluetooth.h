@@ -1,10 +1,9 @@
 #ifndef BLUETOOTH_H
 #define BLUETOOTH_H
 
-#include "ecrobot_interface.h"
 #include "byte_buffer.h"
 
-int receiveData(byte_t *data);
-int sendData(byte_t *data);
+int receiveData(byte_t *buf, int buf_size);
+int sendData(byte_t *buf);
 
 #endif /* BLUETOOTH_H */

@@ -16,7 +16,6 @@ static unsigned char u1s_2msflipcount;
 static unsigned char u1s_judge = 0;
 static f4 f4s_last_yp=0;
 static int s4s_distance = 0;
-static unsigned char u1s_tail = 0;
 static f4 f4s_forward = 70;
 
 
@@ -42,8 +41,8 @@ const  f4   BATTERY_OFFSET = 0.625F;       /* PWMèoóÕéZèoópÉoÉbÉeÉäìdà≥ï‚ê≥ÉIÉtÉ
 #define  TRACE_P   0.65
 #define  TRACE_D   0.08
 
-#define  FORWARD_MIN  70
-#define  FORWARD_MIN_SHORT  20
+#define  FORWARD_MIN  80
+#define  FORWARD_MIN_SHORT  15 //20
 #define  FORWARD_MAX  120
 
 
@@ -86,13 +85,13 @@ void setSoukouTouritsu( Command* cmd , ROBOT_STATUS* status )
             f4t_min = FORWARD_MIN;
         }
 
-        if ( s4t_distance < 2000 )
+        if ( s4t_distance < 2500 )  //2000
         {
             f4t_forward += 0.1;
         }
         else
         {
-			if ( s4t_distance < 4200)
+			if ( s4t_distance < 4000)
 			{
 				f4t_forward -= 0.1;
 			}
@@ -140,7 +139,7 @@ void setSoukouTouritsu( Command* cmd , ROBOT_STATUS* status )
 		if( s4t_distance > 13000 )
 		{
 			f4t_forward -= 0.3;
-            f4t_min = 0;
+            f4t_min = 10;
 		}
 
         if ( f4t_forward > FORWARD_MAX )
@@ -169,10 +168,6 @@ void setSoukouTouritsu( Command* cmd , ROBOT_STATUS* status )
 		tail = tailControl( 30 , status->motorangle_T );
 
         setMotorVal( left , right , tail );
-
-       *((unsigned short *)(&data_log_buffer[  20])) = (short)s4t_distance - s4s_distance;
-       *((unsigned short *)(&data_log_buffer[  22])) = (short)status->lightval;
-       *((unsigned short *)(&data_log_buffer[  24])) = (short)s4t_distance;
     }
     /* user logic end */
 }

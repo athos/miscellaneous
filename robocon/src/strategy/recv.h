@@ -18,7 +18,9 @@
 /*----------*/
 /* ŒöŠJŠÖ” */
 /*----------*/
-unsigned char recv_4ms(Command* cmd , ROBOT_STATUS* status);
+void recv_4ms(Command* cmd , ROBOT_STATUS* status);
 
+
+int u4g_dispatch_func_recv( void );
 
 #endif

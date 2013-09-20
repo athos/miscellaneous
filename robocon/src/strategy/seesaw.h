@@ -9,4 +9,7 @@ void seesaw_ride_pair( Command* cmd , ROBOT_STATUS* status );
 void seesaw_go( Command* cmd , ROBOT_STATUS* status );
 void seesaw_go_pair( Command* cmd , ROBOT_STATUS* status );
 
+int u4g_dispatch_func_seesaw_ride(); 
+int u4g_dispatch_func_seesaw_ride_pair(); 
+
 #endif

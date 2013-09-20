@@ -43,6 +43,10 @@ void stoprobot( ROBOT* this )
 void initrobot( ROBOT* this )
 {
     unsigned int u4t_start_time;
+    unsigned char start_flag;
+    unsigned char u1t_btstart_flag;
+    unsigned char tmp_receive_data[90] = {0};
+    unsigned int len;
 
     u4t_start_time = getTimerValue();
     while ( (getTimerValue() - u4t_start_time) < 150U );
@@ -94,14 +98,85 @@ void initrobot( ROBOT* this )
     ecrobot_sound_tone(1000, 100, 50);
     holdTailAngle( this ,robotTailAngle );
 
+
+
+    start_flag = 0;
+    u1t_btstart_flag = 0;
+
     while ( ecrobot_get_touch_sensor(NXT_PORT_S4) == 1U );    /* スイッチ押下を待つ */
 
-    while ( ecrobot_get_touch_sensor(NXT_PORT_S4) == 0U )     /* スイッチ押下を待つ */
+    while ( ( ecrobot_get_touch_sensor(NXT_PORT_S4) == 0U )   /* スイッチ押下を待つ */
+         || ( u1t_btstart_flag == 0 ) )                       /* スイッチ押下を待つ */
     {
         holdTailAngle( this, robotTailAngle );
+        /* 500ms待つ */
+        u4t_start_time = ecrobot_get_systick_ms();
+        while ( (ecrobot_get_systick_ms() - u4t_start_time) < 500U )
+        {
+            holdTailAngle( this, robotTailAngle );
+			if ( ecrobot_get_touch_sensor(NXT_PORT_S4) != 0U )
+			{
+                start_flag = 1;
+                break;
+            }
+
+            len = ecrobot_read_bt_packet( tmp_receive_data, 90 );
+            if ( len > 0 )
+            {
+	            ecrobot_sound_tone(100, 100, 50);
+	            /**************/
+    	        /* 受信後処理 */
+        	    /**************/
+              	/* U1 */
+        	    u1t_btstart_flag = *((unsigned char *)(&tmp_receive_data[0]));    /* U1 ① */
+                if ( u1t_btstart_flag == 1 )
+                {
+                    break;
     }
+            }
+        }
+        
+        if ( ( start_flag == 1 )
+          || ( u1t_btstart_flag == 1 ) )
+        {
+            break;
+        }
+
+        /* 500ms待つ */
+        u4t_start_time = ecrobot_get_systick_ms();
+        while ( (ecrobot_get_systick_ms() - u4t_start_time) < 500U )
+        {
+            holdTailAngle( this, robotTailAngle );
+            if ( ecrobot_get_touch_sensor(NXT_PORT_S4) != 0U )
+            {
+                start_flag = 1;
+                break;
+            }
+
+            len = ecrobot_read_bt_packet( tmp_receive_data, 90 );
+            if ( len > 0 )
+            {
+	            ecrobot_sound_tone(100, 100, 50);
+	            /**************/
+    	        /* 受信後処理 */
+        	    /**************/
+              	/* U1 */
+        	    u1t_btstart_flag = *((unsigned char *)(&tmp_receive_data[0]));    /* U1 ① */
+                if ( u1t_btstart_flag == 1 )
+                {
+                    break;
+                }
+            }
+        }
+
+        if ( ( start_flag == 1 )
+          || ( u1t_btstart_flag == 1 ) )
+        {
+            break;
+        }
+    }
+
     ecrobot_sound_tone(10000, 100, 50);
-    
 }
 
 
@@ -138,6 +213,7 @@ void monitor( unsigned char data_log_buffer[] )
 void updateRobotStatus( ROBOT* this, ROBOT_STATUS* this_status )
 {
     this_status->lightval     = getLightValue( &((this->robotSensor).LIGHT));
+    this_status->lightraw     = ecrobot_get_light_sensor ( NXT_PORT_S3 ) ;
     this_status->gyroval      = getGyroValue( &(this->robotSensor.GYRO) );
     this_status->gyro_offset  = (this->robotSensor.GYRO).gyroOffsetValue;
     this_status->sonarval     = getSonarValue( &(this->robotSensor.SONAR) );
